@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:memo_flutter_projects/constant/colors.dart';
+import 'package:memo_flutter_projects/widget/description_card.dart';
 import 'package:memo_flutter_projects/widget/noted_card.dart';
 
 class NotedScreen extends StatefulWidget {
@@ -144,8 +145,61 @@ class _NotedScreenState extends State<NotedScreen> {
                   ],
                 ),
               ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.055),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          'lib/assets/image/assign.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Assigned',
+                          style: TextStyle(
+                            fontFamily: 'NiraRegular',
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          right: MediaQuery.of(context).size.width * 0.2),
+                      child: Image.asset(
+                        'lib/assets/image/user.png',
+                        width: 30,
+                        height: 30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               NoteCard(),
               SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.75),
+                child: const Column(
+                  children: [
+                    Text(
+                      'Add tags',
+                      style: TextStyle(
+                          fontFamily: 'NiraSemi',
+                          fontSize: 12,
+                          color: Colors.grey),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              ),
               Padding(
                 padding: EdgeInsets.only(
                     right: MediaQuery.of(context).size.width * 0.7),
@@ -178,7 +232,10 @@ class _NotedScreenState extends State<NotedScreen> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Pick a color'),
+                                title: Text(
+                                  'Pick a color',
+                                  style: TextStyle(fontFamily: 'NiraSemi'),
+                                ),
                                 content: SingleChildScrollView(
                                   child: ColorPicker(
                                     pickerColor: selectedColor,
@@ -212,6 +269,44 @@ class _NotedScreenState extends State<NotedScreen> {
                         color: selectedColor,
                         shape: BoxShape.circle,
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              const Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 225, top: 15),
+                    child: Text(
+                      'Additional Description',
+                      style: TextStyle(
+                          fontFamily: 'NiraSemi',
+                          fontSize: 12,
+                          color: Colors.grey),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                ],
+              ),
+              Description_card(),
+              const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Created',
+                      style: TextStyle(
+                          fontFamily: 'NiraSemi',
+                          fontSize: 15,
+                          color: Colors.grey),
+                    ),
+                    Text(
+                      'Deadline',
+                      style: TextStyle(
+                          fontFamily: 'NiraSemi',
+                          fontSize: 15,
+                          color: Colors.grey),
                     ),
                   ],
                 ),

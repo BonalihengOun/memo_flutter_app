@@ -15,6 +15,7 @@ class _NoteCardState extends State<NoteCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(top: 35),
       width: MediaQuery.of(context).size.width * 0.88,
       height: MediaQuery.of(context).size.height * 0.4,
       decoration: BoxDecoration(
@@ -45,7 +46,7 @@ class _NoteCardState extends State<NoteCard> {
               maxLines: 20,
               maxLength: 200,
               style: TextStyle(
-                fontFamily: 'NiraSemi',
+                fontFamily: 'NiraRegular',
                 fontSize: 16,
               ),
               decoration: InputDecoration(
