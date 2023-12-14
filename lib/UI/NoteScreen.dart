@@ -1,11 +1,13 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:memo_flutter_projects/UI/homepage.dart';
 import 'package:memo_flutter_projects/constant/colors.dart';
+import 'package:memo_flutter_projects/service/api.dart';
 import 'package:memo_flutter_projects/widget/description_card.dart';
 import 'package:memo_flutter_projects/widget/noted_card.dart';
+import 'package:swipeable_button_view/swipeable_button_view.dart';
+import 'package:page_transition/page_transition.dart';
 
 class NotedScreen extends StatefulWidget {
   const NotedScreen({super.key});
@@ -16,10 +18,42 @@ class NotedScreen extends StatefulWidget {
 
 class _NotedScreenState extends State<NotedScreen> {
   Color selectedColor = AppStyle.mainColor;
+  bool isFinished = false;
   String _selectedType = "Not Started";
   void changeColor(Color color) {
     setState(() {
       selectedColor = color;
+    });
+  }
+
+  var titlecontroller = TextEditingController();
+  var textController = TextEditingController();
+  var descriptionController = TextEditingController();
+
+  Color _getFocusColor() {
+    switch (_selectedType) {
+      case 'Not Started':
+        return Colors.yellow;
+      case 'In Progress':
+        return Colors.blue;
+      case 'Done':
+        return Colors.green;
+      default:
+        return Colors.yellow; // Default color if none of the cases match
+    }
+  }
+
+  DateTime _dateTime = DateTime.now();
+  void _showdropdown() {
+    showDatePicker(
+            initialDate: DateTime.now(),
+            context: context,
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2030))
+        .then((value) {
+      setState(() {
+        _dateTime = value!;
+      });
     });
   }
 
@@ -124,7 +158,7 @@ class _NotedScreenState extends State<NotedScreen> {
                             underline: Container(),
                             elevation: 0,
                             borderRadius: BorderRadius.circular(12),
-                            focusColor: Colors.amber,
+                            focusColor: _getFocusColor(),
                             padding: EdgeInsets.all(8),
                             style: TextStyle(
                                 fontFamily: 'NiraRegular',
@@ -144,6 +178,9 @@ class _NotedScreenState extends State<NotedScreen> {
                     )
                   ],
                 ),
+              ),
+              SizedBox(
+                height: 10,
               ),
               Padding(
                 padding: EdgeInsets.only(
@@ -182,7 +219,51 @@ class _NotedScreenState extends State<NotedScreen> {
                   ],
                 ),
               ),
-              NoteCard(),
+              Container(
+                margin: EdgeInsets.only(top: 35),
+                width: MediaQuery.of(context).size.width * 0.88,
+                height: MediaQuery.of(context).size.height * 0.4,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: titlecontroller,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontFamily: 'NiraBold',
+                        fontSize: 30,
+                      ),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(8),
+                        hintText: 'Title',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 280,
+                      child: TextField(
+                        controller: textController,
+                        maxLines: 20,
+                        maxLength: 200,
+                        style: TextStyle(
+                          fontFamily: 'NiraRegular',
+                          fontSize: 16,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(8),
+                          helperMaxLines: 10,
+                          hintText: 'Write your note. . .',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 20),
               Padding(
                 padding: EdgeInsets.only(
@@ -273,24 +354,51 @@ class _NotedScreenState extends State<NotedScreen> {
                   ],
                 ),
               ),
-              const Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 225, top: 15),
-                    child: Text(
-                      'Additional Description',
-                      style: TextStyle(
-                          fontFamily: 'NiraSemi',
-                          fontSize: 12,
-                          color: Colors.grey),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                ],
+              SizedBox(height: 10),
+              Container(
+                margin: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.55),
+                child: const Text(
+                  'Additional Description',
+                  style: TextStyle(
+                      fontFamily: 'NiraSemi', fontSize: 12, color: Colors.grey),
+                ),
               ),
-              Description_card(),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.88,
+                height: MediaQuery.of(context).size.height * 0.25,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 220,
+                      child: TextField(
+                        controller: descriptionController,
+                        maxLines: 20,
+                        maxLength: 200,
+                        style: const TextStyle(
+                          fontFamily: 'NiraRegular',
+                          fontSize: 16,
+                        ),
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(8),
+                          helperMaxLines: 10,
+                          hintText: 'Describe your note. . .',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
               const Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: EdgeInsets.only(left: 20, right: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -309,6 +417,92 @@ class _NotedScreenState extends State<NotedScreen> {
                           color: Colors.grey),
                     ),
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 5, right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MaterialButton(
+                      onPressed: _showdropdown,
+                      child: Row(
+                        children: [
+                          Icon(Icons.date_range),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Date',
+                            style: TextStyle(
+                                fontFamily: 'NiraSemi',
+                                fontSize: 15,
+                                color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 25, right: 20),
+                child: Row(
+                  children: [
+                    Text(
+                      _dateTime.toString(),
+                      style: TextStyle(
+                          fontFamily: 'NiraSemi',
+                          fontSize: 15,
+                          color: Colors.black.withOpacity(0.5)),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.1),
+                child: SwipeableButtonView(
+                  buttonText: 'Set As Done',
+                  buttontextstyle: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'NiraBold',
+                      color: Colors.white),
+                  buttonWidget: Icon(
+                    Icons.check,
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                  activeColor: AppStyle.mainColor,
+                  isFinished: isFinished,
+                  onWaitingProcess: () {
+                    Future.delayed(Duration(seconds: 2), () {
+                      setState(() {
+                        isFinished = true;
+                      });
+                    });
+                  },
+                  onFinish: () async {
+                    var data = {
+                      "Ntitle": titlecontroller.text,
+                      "Nnote": textController.text,
+                      "Ndescription": descriptionController.text,
+                    };
+                    Api.addnote(data);
+
+                    await Navigator.push(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.fade, child: HomePage()));
+
+                    //TODO: For reverse ripple effect animation
+                    setState(() {
+                      isFinished = false;
+                    });
+                  },
                 ),
               ),
             ],

@@ -2,14 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Description_card extends StatefulWidget {
-  const Description_card({super.key});
+  final TextEditingController descriptionController = TextEditingController();
+  Description_card({
+    Key? key,
+    required TextEditingController descriptionController,
+  }) : super(key: key);
 
   @override
   State<Description_card> createState() => _Description_cardState();
 }
 
 class _Description_cardState extends State<Description_card> {
-  final TextEditingController descriptionController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,7 +26,7 @@ class _Description_cardState extends State<Description_card> {
           SizedBox(
             height: 220,
             child: TextField(
-              controller: descriptionController,
+              controller: widget.descriptionController,
               maxLines: 20,
               maxLength: 200,
               style: const TextStyle(
