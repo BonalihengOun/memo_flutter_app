@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:memo_flutter_projects/UI/homepage.dart';
 import 'package:memo_flutter_projects/constant/colors.dart';
 import 'package:memo_flutter_projects/service/api.dart';
-import 'package:memo_flutter_projects/widget/description_card.dart';
-import 'package:memo_flutter_projects/widget/noted_card.dart';
+
 import 'package:swipeable_button_view/swipeable_button_view.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -42,6 +40,7 @@ class _NotedScreenState extends State<NotedScreen> {
         return Colors.yellow; // Default color if none of the cases match
     }
   }
+
 
   DateTime _dateTime = DateTime.now();
   void _showdropdown() {
@@ -479,7 +478,7 @@ class _NotedScreenState extends State<NotedScreen> {
                   activeColor: AppStyle.mainColor,
                   isFinished: isFinished,
                   onWaitingProcess: () {
-                    Future.delayed(Duration(seconds: 2), () {
+                    Future.delayed(Duration(seconds: 1), () {
                       setState(() {
                         isFinished = true;
                       });

@@ -1,11 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import '../model/noted_model.dart';
 
 class Api {
-  static const baseUrl = "http://192.168.117.143:3000/api/";
+  static const baseUrl = "http://192.168.169.143:3000/api/";
 
   //Post api
   static addnote(Map ndata) async {
@@ -27,8 +27,9 @@ class Api {
   //Get api
   static Future<List<Noted>> getNote() async {
     List<Noted> noted = [];
+    var url = Uri.parse(baseUrl + "get_noted");
     try {
-      final res = await http.get(Uri.parse("$baseUrl/get_noted"));
+      final res = await http.get(url);
       if (res.statusCode == 200) {
         var data = jsonDecode(res.body);
         print(data);

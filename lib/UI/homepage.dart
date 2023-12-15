@@ -12,6 +12,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late int note_length = 0;
+  late List<Noted> notedList = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    try {
+      notedList = await Api.getNote();
+      setState(() {
+        note_length = notedList.length;
+      });
+      print('Received data: $notedList');
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -70,71 +90,88 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(fontFamily: 'NiraRegular', fontSize: 15),
                   ),
                   Text(
-                    "Your \nProjects(3)",
+                    "Your \nProjects(${note_length})",
                     style: TextStyle(fontFamily: 'NiraBold', fontSize: 40),
                   ),
                 ],
               ),
             ),
-            SizedBox(
-              height: 65,
-            ),
             Expanded(
-              child: FutureBuilder<List<Noted>>(
-                future: Api.getNote(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Noted>> snapshot) {
-                  if (snapshot.hasData) {
-                    List<Noted> ndata = snapshot.data!;
-                    return ListView.builder(
-                      itemCount: ndata.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          leading: Icon(
-                            Icons.person_2_rounded,
-                            size: 32,
-                          ),
-                          title: Text(
-                            ndata[index].title.toString(),
-                            style: TextStyle(
-                                fontFamily: 'NiraSemi',
-                                color: AppStyle.mainColor),
-                          ),
-                          subtitle: Text(
-                            ndata[index].note.toString(),
-                            style: TextStyle(
-                                fontFamily: 'NiraSemi',
-                                color: AppStyle.mainColor),
-                          ),
-                          trailing: Text(
-                            ndata[index].description.toString(),
-                            style: TextStyle(
-                                fontFamily: 'NiraSemi',
-                                color: AppStyle.mainColor),
-                          ),
+              child: Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Container(
+                  child: FutureBuilder<List<Noted>>(
+                    future: Api.getNote(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Noted>> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
                         );
-                      },
-                    );
-                  } else {
-                    return Center(
-                      child: Text(
-                        'No Data Found',
-                        style: TextStyle(
-                          fontFamily: 'NiraSemi',
-                          color: Colors.grey,
-                        ),
-                      ),
-                    );
-                  }
-                },
+                      } else {
+                        List<Noted> ndata = snapshot.data!;
+                        return ListView.builder(
+                          itemCount: ndata.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card(
+                              color: AppStyle.bgcolor,
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(width: 2),
+                                borderRadius: BorderRadius.circular(17),
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image:
+                                        AssetImage('lib/assets/image/bg.jpg'),
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                height:
+                                    MediaQuery.of(context).size.height * 0.3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        ndata[index].title,
+                                        style: TextStyle(
+                                            fontFamily: 'NiraBold',
+                                            color: Colors.black,
+                                            fontSize: 18),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(6.0),
+                                        child: Text(
+                                          ndata[index].note,
+                                          style: TextStyle(
+                                              wordSpacing: 1,
+                                              height: 1.8,
+                                              fontFamily: 'NiraRegular',
+                                              color: Colors.black,
+                                              fontSize: 14),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
               ),
             ),
           ],
         ),
-        bottomNavigationBar: Container(
+        floatingActionButton: Container(
           margin: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.75,
-              bottom: MediaQuery.of(context).size.width * 0.050),
+              left: MediaQuery.of(context).size.width * 0.75, bottom: 10),
           child: FloatingActionButton(
             onPressed: () {
               Navigator.push(context,
